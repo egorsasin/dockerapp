@@ -1,26 +1,31 @@
-FROM node:lts AS builder
+FROM node:lts-alpine AS development
 
-WORKDIR /usr/src/mosaic
+WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 
 # Install the dependencies
-RUN npm install --only=development --silent
+RUN npm ci --only=development --silent
+
+FROM node:lts-alpine AS build
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY --chown=node:node . .
 
-RUN npm run build --omit=dev --verbose
+RUN npm run build
 
-FROM node:lts
+RUN npm ci --only=production --silent
 
-WORKDIR /usr/src/mosaic
+FROM node:lts-alpine AS production
 
-COPY package*.json ./
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
 RUN npm install -g pm2@latest
-RUN npm install --only=production --silent
-RUN npm install express
 
-ENTRYPOINT ["pm2-runtime","dist/main.js"]
+ENTRYPOINT ["pm2-runtime", "dist/main.js"]
