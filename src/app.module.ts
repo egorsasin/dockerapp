@@ -13,6 +13,7 @@ import { Log } from './log.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         console.log(process.env);
+        console.log('__HOST', configService.get<string>('DATABASE_HOST'));
 
         return {
           type: 'mysql',
