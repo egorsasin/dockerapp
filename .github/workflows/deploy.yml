@@ -37,4 +37,4 @@ jobs:
             docker stop mosaic-api || true
             docker rm mosaic-api || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/mosaic-api:${{ github.sha }}
-            docker run -d --name mosaic-api --network=db-network -e DATABASE_HOST=${{ secrets.DATABASE_HOST }} -e DATABASE_DB=${{ secrets.DATABASE_DB }} -e DATABASE_USER=${{ secrets.DATABASE_USER }}" -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/mosaic-api:${{ github.sha }}
+            docker run -d --name mosaic-api --network=db-network -e DATABASE_HOST=${{ secrets.DATABASE_HOST }} -e DATABASE_DB=${{ secrets.DATABASE_DB }} -e DATABASE_USER=${{ secrets.DATABASE_USER }} -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/mosaic-api:${{ github.sha }}
