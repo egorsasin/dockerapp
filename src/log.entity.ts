@@ -6,5 +6,8 @@ export class Log {
     public id: number;
 
     @Column()
+    public signature: string
+
+    @Column()
     public data: string
 }

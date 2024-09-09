@@ -12,9 +12,6 @@ import { Log } from './log.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        console.log(process.env);
-        console.log('__HOST', configService.get<string>('DATABASE_HOST'));
-
         return {
           type: 'mysql',
           host: configService.get<string>('DATABASE_HOST'),
