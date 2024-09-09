@@ -13,6 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create .env file
+        run: |
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
+          echo "DATABASE_DB=${{ secrets.DATABASE_DB }}" >> .env
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "NODE_ENV=production" >> .env
+
+      - name: Print .env file (for debug purpose, remove in production)
+        run: cat .env    
+
       - name: Login to Docker hub
         uses: docker/login-action@v3
         with:
@@ -29,16 +40,10 @@ jobs:
 
       - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@master
-        env: 
-            DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-            DATABASE_DB: ${{ secrets.DATABASE_DB }}
-            DATABASE_USER: ${{ secrets.DATABASE_USER}}
-            DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD}}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          envs: DATABASE_HOST, DATABASE_DB, DATABASE_USER, DATABASE_PASSWORD
           script: |
             docker stop mosaic-api || true
             docker rm mosaic-api || true
