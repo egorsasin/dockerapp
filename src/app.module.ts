@@ -12,7 +12,7 @@ import { Log } from './log.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        return {
+        const credentials = {
           type: 'mysql',
           host: configService.get<string>('DATABASE_HOST'),
           port: 3306,
@@ -22,6 +22,10 @@ import { Log } from './log.entity';
           entities: [Log],
           synchronize: true,
         };
+
+        console.log(credentials);
+
+        return credentials;
       },
       inject: [ConfigService],
     }),
