@@ -25,7 +25,7 @@ import { Log } from './log.entity';
 
         console.log(credentials);
 
-        return credentials;
+        return credentials as any;
       },
       inject: [ConfigService],
     }),
